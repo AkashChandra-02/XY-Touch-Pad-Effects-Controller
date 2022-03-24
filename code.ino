@@ -30,7 +30,7 @@ int pressed = 0;
 #define YP A4  // must be an analog pin, use "An" notation!
 #define XM A5  // must be an analog pin, use "An" notation!
 #define YM 8   // can be a digital pin
-#define XP 9   // can be a digital pin
+#define XP 12  // can be a digital pin
 TouchScreen ts = TouchScreen(XP, YP, XM, YM, SCREEN_RES);
 
 void setup() {
