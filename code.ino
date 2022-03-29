@@ -30,7 +30,7 @@ int pressed = 0;
 #define YP A4  // must be an analog pin, use "An" notation!
 #define XM A5  // must be an analog pin, use "An" notation!
 #define YM 8   // can be a digital pin
-#define XP 12  // can be a digital pin
+#define XP 10  // can be a digital pin
 TouchScreen ts = TouchScreen(XP, YP, XM, YM, SCREEN_RES);
 
 void setup() {
@@ -41,29 +41,13 @@ void setup() {
 	}
 
 	Serial.begin(9600);
+	
 
 }
 
 void loop() {
+	int loop_count = 0;
 	
-	//Read in analog values
-	for(int i = 0; i < NUM_POTS; i++)
-	{
-		pot_value[i] = analogRead(pots_pin[i]);
-	}
-	
-	//Modify the values if needed
-	for(int i = 0; i < NUM_POTS; i++)
-	{
-		pot_value[i] = map(pot_value[i], 0, 1023, 0, 255);
-	}
-	
-	//Write values out to PWM pins
-	for(int i = 0; i < NUM_C; i++)
-	{
-		analogWrite(out_pins[i], pot_value[i]);
-	}
-
 	// a point object holds x y and z coordinates
   	TSPoint p = ts.getPoint();
   
@@ -74,6 +58,7 @@ void loop() {
 		x = p.x;
 		y = p.y;
 		pressed = 1;
+		Serial.print("Getting Touch Input")
 		Serial.print("X = "); Serial.print(p.x);
      	Serial.print("\tY = "); Serial.print(p.y);
      	Serial.print("\tPressure = "); Serial.println(p.z);
@@ -81,10 +66,33 @@ void loop() {
 
 	while(pressed == 1)
 	{
-		//Do something about it
+		//Read in analog values
+		for(int i = 0; i < NUM_POTS; i++)
+		{
+			pot_value[i] = analogRead(pots_pin[i]);
+		}
+		
+		//Modify the values if needed
+		for(int i = 0; i < NUM_POTS; i++)
+		{
+			pot_value[i] = map(pot_value[i], 0, 1023, 0, 255);
+		}
+		
+		//Write values out to PWM pins
+		for(int i = 0; i < NUM_C; i++)
+		{
+			analogWrite(out_pins[i], pot_value[i]);
+		}
+
 		z = x + y;
-		delay(DELAY_TIME);
-		pressed = 0;
+		//do something about this
+		delay(1);
+		loop_count++;
+		if(loop_count >= DELAY_TIME)
+		{
+			pressed = 0;
+			loop_count = 0;
+		}
 	}
 
 
