@@ -4,29 +4,30 @@
 	Members: Akash Chandra & Asaiah Rock
 
 	The touch screen code can be found here: https://github.com/adafruit/Adafruit_TouchScreen
-	We are using bits of https://github.com/adafruit/Adafruit_TouchScreen/blob/master/examples/touchscreendemo/touchscreendemo.ino
+	We using the same method to read the screen as https://github.com/adafruit/Adafruit_TouchScreen/blob/master/examples/touchscreendemo/touchscreendemo.ino
 */
 
 #include <stdint.h>
 #include "TouchScreen.h"
-
+//numberof  
 #define NUM_POTS 4
-//analogRead('a'+antenna)
 
-#define NUM_C 4 
-//analogWrite(motor, 0);
+//Number of outputs, number_control
+#define NUM_C 4
 
 int x = 0;
 int y = 0;
 int z = 0;
-
+//Set up inputs and outputs
 int pot_value[4] = {0, 0, 0, 0};
 int pot_pins = {A0, A1, A2, A3};
 int out_pins = {3, 5, 6, 9};
 int pressed = 0;
-#define SCREEN_RES 300
-#define DELAY_TIME 100
 
+//Set up constants
+#define SCREEN_RES 250
+#define DELAY_TIME 100
+//Set up screen
 #define YP A4  // must be an analog pin, use "An" notation!
 #define XM A5  // must be an analog pin, use "An" notation!
 #define YM 8   // can be a digital pin
@@ -34,7 +35,7 @@ int pressed = 0;
 TouchScreen ts = TouchScreen(XP, YP, XM, YM, SCREEN_RES);
 
 void setup() {
-	
+	//Set up outputs
 	for(int i = 0; i < NUM_C; i++)
 	{
 		pinMode(out_pins[i], OUTPUT);
@@ -51,10 +52,9 @@ void loop() {
 	// a point object holds x y and z coordinates
   	TSPoint p = ts.getPoint();
   
-  	// we have some minimum pressure we consider 'valid'
-  	// pressure of 0 means no pressing!
+  	// Read in touch screen if you are touching it
   	if (p.z > ts.pressureThreshhold && pressed == 0) {
-
+		//Store x and y values
 		x = p.x;
 		y = p.y;
 		pressed = 1;
@@ -66,13 +66,13 @@ void loop() {
 
 	while(pressed == 1)
 	{
-		//Read in analog values
+		//Read in analog values from potentiometers
 		for(int i = 0; i < NUM_POTS; i++)
 		{
 			pot_value[i] = analogRead(pots_pin[i]);
 		}
 		
-		//Modify the values if needed
+		//Modify and scale the values if needed
 		for(int i = 0; i < NUM_POTS; i++)
 		{
 			pot_value[i] = map(pot_value[i], 0, 1023, 0, 255);
@@ -86,6 +86,8 @@ void loop() {
 
 		z = x + y;
 		//do something about this
+
+		//If 100 ms has passed, read touch screen input
 		delay(1);
 		loop_count++;
 		if(loop_count >= DELAY_TIME)
