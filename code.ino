@@ -23,6 +23,7 @@ int pot_value[4] = {0, 0, 0, 0};
 int pot_pins = {A0, A1, A2, A3};
 int out_pins = {3, 5, 6, 9};
 int pressed = 0;
+int screen_out = 11;
 
 //Set up constants
 #define SCREEN_RES 250
@@ -40,7 +41,8 @@ void setup() {
 	{
 		pinMode(out_pins[i], OUTPUT);
 	}
-
+	pinMode(out_pins[i], OUTPUT);
+	//Set up debugging info
 	Serial.begin(9600);
 	
 
@@ -83,10 +85,11 @@ void loop() {
 		{
 			analogWrite(out_pins[i], pot_value[i]);
 		}
-
+		//Process screen data
 		z = x + y;
-		//do something about this
-
+		z = map(z, 0, 1023, 0, 255);
+		analogWrite(screen_out, z);
+		
 		//If 100 ms has passed, read touch screen input
 		delay(1);
 		loop_count++;
