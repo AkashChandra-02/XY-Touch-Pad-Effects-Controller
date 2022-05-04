@@ -20,8 +20,8 @@ int y = 0;
 int z = 0;
 //Set up inputs and outputs
 int pot_value[4] = {0, 0, 0, 0};
-int pot_pins = {A0, A1, A2, A3};
-int out_pins = {3, 5, 6, 9};
+int pot_pins[4] = {A0, A1, A2, A3};
+int out_pins[4] = {3, 5, 6, 9};
 int pressed = 0;
 int screen_out = 11;
 
@@ -41,7 +41,7 @@ void setup() {
 	{
 		pinMode(out_pins[i], OUTPUT);
 	}
-	pinMode(out_pins[i], OUTPUT);
+	pinMode(screen_out, OUTPUT);
 	//Set up debugging info
 	Serial.begin(9600);
 	
@@ -60,8 +60,8 @@ void loop() {
 		x = p.x;
 		y = p.y;
 		pressed = 1;
-		Serial.print("Getting Touch Input")
-		Serial.print("X = "); Serial.print(p.x);
+		Serial.print("\nGetting Touch Input");
+		Serial.print("\tX = "); Serial.print(p.x);
      	Serial.print("\tY = "); Serial.print(p.y);
      	Serial.print("\tPressure = "); Serial.println(p.z);
   	}
@@ -71,13 +71,14 @@ void loop() {
 		//Read in analog values from potentiometers
 		for(int i = 0; i < NUM_POTS; i++)
 		{
-			pot_value[i] = analogRead(pots_pin[i]);
+			pot_value[i] = analogRead(pot_pins[i]);
+      Serial.print("\npot "); Serial.print(i); Serial.print(" "); Serial.print(pot_value[i]);  
 		}
 		
 		//Modify and scale the values if needed
 		for(int i = 0; i < NUM_POTS; i++)
 		{
-			pot_value[i] = map(pot_value[i], 0, 1023, 0, 255);
+			pot_value[i] = map(pot_value[i], 0, 1023, 0, 200);
 		}
 		
 		//Write values out to PWM pins
